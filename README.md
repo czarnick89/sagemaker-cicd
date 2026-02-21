@@ -1,4 +1,4 @@
-# EKS Deployment Evidence - FastAPI SageMaker Service
+# EKS Deployment Evidence - FastAPI SageMaker Service - out of date
 
 **Student:** czarnick89  
 **Cluster:** k8s-training-cluster (us-east-1)  
