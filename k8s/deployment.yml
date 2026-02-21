@@ -1,0 +1,74 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sagemaker-fastapi
+  namespace: default
+  labels:
+    app: czarnick89-sagemaker
+    version: v1
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: czarnick89-sagemaker
+  template:
+    metadata:
+      labels:
+        app: czarnick89-sagemaker
+        version: v1
+    spec:
+      # Pull secret for GHCR access
+      imagePullSecrets:
+        - name: registry-secrets
+      
+      containers:
+      - name: fastapi-app
+        image: ghcr.io/czarnick89/sagemaker-fastapi:latest
+        imagePullPolicy: Always
+        
+        ports:
+        - containerPort: 8000
+          name: http
+          protocol: TCP
+        
+        # Environment variables
+        env:
+        - name: SAGEMAKER_ENDPOINT
+          value: "fraud-detection-endpoint"
+        - name: AWS_REGION
+          value: "us-east-1"
+        
+        # Resource limits for shared cluster (t3.medium nodes)
+        resources:
+          requests:
+            cpu: 200m
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
+        
+        # Liveness probe - checks if app is alive
+        # Restart pod if this fails
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 3
+          failureThreshold: 3
+          successThreshold: 1
+        
+        # Readiness probe - checks if app can serve traffic
+        # Remove from service endpoints if this fails
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 10
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+          successThreshold: 1
