@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: sagemaker-fastapi
+  name: nick-sagemaker-fastapi
   namespace: default
   labels:
-    app: czarnick89-sagemaker
+    app: nick-sagemaker
     version: v1
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: czarnick89-sagemaker
+      app: nick-sagemaker
   template:
     metadata:
       labels:
-        app: czarnick89-sagemaker
+        app: nick-sagemaker
         version: v1
     spec:
       # Pull secret for GHCR access
