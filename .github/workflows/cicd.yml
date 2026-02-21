@@ -78,6 +78,11 @@ jobs:
       - name: Deploy to EKS
         run: kubectl apply -f k8s -n ${{ env.K8S_NAMESPACE }}
 
+      - name: Force rollout to pull new image
+        run: |
+          kubectl rollout restart deployment nick-sagemaker-fastapi -n ${{ env.K8S_NAMESPACE }}
+          kubectl rollout status deployment nick-sagemaker-fastapi -n ${{ env.K8S_NAMESPACE }}
+
       - name: Verify rollout
         run: |
           kubectl get deployments -n ${{ env.K8S_NAMESPACE }}
