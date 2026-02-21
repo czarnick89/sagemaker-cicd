@@ -46,8 +46,7 @@ async def health_check() -> Dict[str, str]:
     Liveness probe endpoint.
     Returns healthy if the application is running.
     """
-    return {"status": "healthy"}
-
+    return {"status": "healthy", 'version': 'v1.0.0'}
 
 @app.get("/ready")
 async def readiness_check() -> Dict[str, Any]:
